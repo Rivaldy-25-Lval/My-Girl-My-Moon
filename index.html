@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Moonlight</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Dancing+Script:wght@400;700&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0f172a; /* Fallback */
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            color: #e2e8f0;
+        }
+
+        /* Typography */
+        .font-poet {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        .font-hand {
+            font-family: 'Dancing Script', cursive;
+        }
+        .font-modern {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Canvas for Stars */
+        #star-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+        }
+
+        /* The Moon Glow Effect */
+        .moon-container {
+            position: fixed;
+            top: 5%;
+            right: 10%;
+            width: 100px;
+            height: 100px;
+            z-index: -1;
+            opacity: 0.9;
+            animation: floatMoon 10s infinite ease-in-out;
+        }
+        
+        .moon {
+            width: 80px;
+            height: 80px;
+            background-color: #f6f1d5;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #f6f1d5, 0 0 80px #ffffff, inset -20px -20px 40px rgba(0,0,0,0.1);
+        }
+
+        @keyframes floatMoon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Scroll Animation Classes */
+        .reveal-text {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090A0F;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+
+        /* Music Button Animation */
+        .music-spin {
+            animation: spin 3s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Background Elements -->
+    <canvas id="star-canvas"></canvas>
+    <div class="moon-container">
+        <div class="moon"></div>
+    </div>
+
+    <!-- Music Player (Fix: Changed from display:none to opacity-0 to ensure audio works) -->
+    <div class="fixed bottom-0 left-0 w-1 h-1 opacity-0 pointer-events-none overflow-hidden" style="z-index: -1;">
+        <div id="youtube-player"></div>
+    </div>
+    
+    <!-- Music Control Button -->
+    <!-- Added id="music-btn" and disabled initially until loaded -->
+    <button id="music-btn" onclick="toggleMusic()" class="fixed top-6 right-6 z-50 p-3 glass-card rounded-full hover:bg-white/10 transition-all duration-300 group cursor-pointer opacity-50 cursor-not-allowed" disabled>
+        <!-- Play Icon -->
+        <svg id="play-icon" class="w-6 h-6 text-indigo-200 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12 6-12 6z"></path>
+        </svg>
+        <!-- Pause Icon (Hidden by default) -->
+        <svg id="pause-icon" class="w-6 h-6 text-indigo-200 group-hover:text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6"></path> 
+        </svg>
+        <span id="music-tooltip" class="absolute right-full mr-3 top-1/2 -translate-y-1/2 text-[10px] text-indigo-200 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Loading Music...</span>
+    </button>
+
+    <!-- Main Content Container -->
+    <main class="relative min-h-screen flex flex-col items-center justify-center px-6 pb-20">
+
+        <!-- Intro Section -->
+        <section class="h-screen flex flex-col items-center justify-center text-center reveal-text space-y-6">
+            <p class="font-modern text-xs md:text-sm tracking-[0.3em] uppercase text-indigo-200 opacity-70">A digital letter</p>
+            <h1 class="font-hand text-5xl md:text-7xl lg:text-8xl text-indigo-100 drop-shadow-lg">
+                For my girl,<br>
+                <span class="text-indigo-300">Moonlight</span>
+            </h1>
+            <div class="animate-bounce mt-10 opacity-50">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </div>
+        </section>
+
+        <!-- Poem Section 1 -->
+        <section class="min-h-[60vh] flex items-center justify-center w-full max-w-2xl mx-auto my-10">
+            <div class="glass-card p-8 md:p-12 rounded-lg text-center reveal-text">
+                <p class="font-poet text-2xl md:text-3xl leading-relaxed text-slate-200">
+                    "When the world forgets to lift its eyes toward your light, <br>
+                    <span class="text-indigo-300 italic">I will lift mine.</span>"
+                </p>
+            </div>
+        </section>
+
+        <!-- Poem Section 2 (The Core Message) -->
+        <section class="min-h-[50vh] flex items-center justify-center w-full max-w-3xl mx-auto my-10">
+            <div class="text-center reveal-text space-y-8">
+                <div class="w-16 h-px bg-gradient-to-r from-transparent via-indigo-400 to-transparent mx-auto"></div>
+                <p class="font-poet text-xl md:text-3xl leading-loose text-slate-300">
+                    No trophies, no applause, just me, <br>
+                    finding you in the quiet,
+                </p>
+                <p class="font-poet text-xl md:text-3xl leading-loose text-slate-300">
+                    to tell you how profoundly proud I am <br>
+                    of the <span class="text-amber-100 glow">gentle wonders</span> you carry <br>
+                    in your every step.
+                </p>
+                <div class="w-16 h-px bg-gradient-to-r from-transparent via-indigo-400 to-transparent mx-auto"></div>
+            </div>
+        </section>
+
+        <!-- Additional Verse 1 -->
+        <section class="min-h-[50vh] flex items-center justify-center w-full max-w-2xl mx-auto my-10">
+            <div class="glass-card p-8 md:p-12 rounded-lg text-center reveal-text relative overflow-hidden">
+                 <!-- Decorative quote mark -->
+                 <span class="absolute top-2 left-4 text-6xl text-indigo-500 opacity-20 font-serif">“</span>
+                <p class="font-poet text-xl md:text-2xl leading-relaxed text-slate-200">
+                    You shine not because you are loud, but because you are real. In a chaotic universe, you are my favorite constellation, steady, bright, and endlessly beautiful.
+                </p>
+            </div>
+        </section>
+
+        <!-- Special Dedication for Eiz -->
+        <section class="min-h-[60vh] flex flex-col items-center justify-center text-center reveal-text space-y-8 px-4">
+            <div class="space-y-4">
+                <p class="font-modern text-xs tracking-[0.2em] text-indigo-300 uppercase">For my cutie pie</p>
+                <h2 class="font-hand text-5xl md:text-6xl text-white drop-shadow-md">Eiz</h2>
+            </div>
+            
+            <p class="font-poet text-xl md:text-2xl leading-loose text-slate-200 max-w-2xl">
+                Your smile is the only luminescence I need,<br>
+                and your existence is a beauty that far eclipses the night sky.
+            </p>
+
+            <div class="glass-card px-8 py-6 rounded-full inline-block mt-8 transform hover:scale-105 transition-transform duration-500">
+                <p class="font-poet text-lg md:text-xl text-indigo-100 italic">
+                    "Apologies, dear Moon...<br> 
+                    but she is far prettier than you."
+                </p>
+            </div>
+        </section>
+
+        <!-- Final Signature -->
+        <section class="h-[40vh] flex flex-col items-center justify-center text-center reveal-text border-t border-indigo-900/30 w-full max-w-4xl mx-auto">
+            <p class="font-modern text-sm tracking-widest mb-4 opacity-60">ALWAYS & FOREVER</p>
+            <h2 class="font-hand text-4xl md:text-6xl text-indigo-200">
+                Simply, Yours.
+            </h2>
+            
+            <p class="font-modern text-xs md:text-sm tracking-[0.2em] mt-6 text-indigo-300/80 uppercase">
+                From Lval for Eiz
+            </p>
+
+            <button onclick="createHeartEffect(event)" class="mt-12 px-6 py-2 border border-indigo-400/30 rounded-full text-indigo-200 hover:bg-indigo-500/10 transition-colors duration-300 font-modern text-xs tracking-widest uppercase">
+                Send a Heart
+            </button>
+        </section>
+
+    </main>
+
+    <footer class="fixed bottom-4 w-full text-center pointer-events-none z-50">
+        <p class="text-white/20 text-[10px] font-modern tracking-widest">MADE WITH LOVE</p>
+    </footer>
+
+    <!-- YouTube API Script -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        /**
+         * MUSIC PLAYER LOGIC (YouTube Embed)
+         */
+        let player;
+        let isPlaying = false;
+        const musicBtn = document.getElementById('music-btn');
+        const musicTooltip = document.getElementById('music-tooltip');
+
+        // Make this function global so the API can find it
+        window.onYouTubeIframeAPIReady = function() {
+            player = new YT.Player('youtube-player', {
+                height: '200',
+                width: '200',
+                videoId: 'tGv7CUutzqU',
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': 'tGv7CUutzqU',
+                    'playsinline': 1,
+                    'origin': window.location.origin // Crucial for some iframe environments
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        };
+
+        function onPlayerReady(event) {
+            console.log("Music Player Ready");
+            event.target.setVolume(100);
+            
+            // Enable button
+            if(musicBtn) {
+                musicBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                musicBtn.removeAttribute('disabled');
+                if(musicTooltip) musicTooltip.textContent = "Play Song";
+            }
+        }
+
+        function onPlayerStateChange(event) {
+            // Optional: Handle buffering or ending if needed
+        }
+
+        function toggleMusic() {
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            
+            // Safety check: if API isn't loaded or player isn't ready
+            if (!player || typeof player.getPlayerState !== 'function') {
+                console.log("Player not ready yet");
+                return;
+            }
+
+            const playerState = player.getPlayerState();
+
+            // YT.PlayerState.PLAYING is usually 1
+            if (playerState === 1 || isPlaying) {
+                player.pauseVideo();
+                if(playIcon) playIcon.classList.remove('hidden');
+                if(pauseIcon) pauseIcon.classList.add('hidden');
+                if(musicBtn) musicBtn.classList.remove('music-spin');
+                isPlaying = false;
+                if(musicTooltip) musicTooltip.textContent = "Play Song";
+            } else {
+                player.unMute();
+                player.playVideo();
+                if(playIcon) playIcon.classList.add('hidden');
+                if(pauseIcon) pauseIcon.classList.remove('hidden');
+                if(musicBtn) musicBtn.classList.add('music-spin');
+                isPlaying = true;
+                if(musicTooltip) musicTooltip.textContent = "Pause Song";
+            }
+        }
+
+        /**
+         * ANIMATED BACKGROUND (STARS)
+         */
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let stars = [];
+
+        function initCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            createStars();
+        }
+
+        function createStars() {
+            stars = [];
+            const count = Math.floor((width * height) / 6000); // Density of stars
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 1.5,
+                    opacity: Math.random(),
+                    speed: Math.random() * 0.05 + 0.01,
+                    direction: Math.random() > 0.5 ? 1 : -1
+                });
+            }
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, width, height);
+            
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fill();
+
+                // Twinkle effect
+                star.opacity += (Math.random() - 0.5) * 0.05;
+                if (star.opacity < 0.1) star.opacity = 0.1;
+                if (star.opacity > 1) star.opacity = 1;
+
+                // Move stars slightly
+                star.y -= star.speed; 
+                if (star.y < 0) star.y = height;
+            });
+
+            requestAnimationFrame(animateStars);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        animateStars();
+
+        /**
+         * SCROLL REVEAL ANIMATION
+         */
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2 // Trigger when 20% visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-text').forEach(el => {
+            observer.observe(el);
+        });
+
+        /**
+         * HEART EFFECT INTERACTION
+         */
+        function createHeartEffect(e) {
+            const button = e.target;
+            const rect = button.getBoundingClientRect();
+            
+            for(let i=0; i<5; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '🤍';
+                heart.style.position = 'fixed';
+                heart.style.left = (rect.left + rect.width/2) + 'px';
+                heart.style.top = (rect.top) + 'px';
+                heart.style.fontSize = '20px';
+                heart.style.pointerEvents = 'none';
+                heart.style.transform = `translate(-50%, -50%)`;
+                heart.style.transition = 'all 1s ease-out';
+                heart.style.opacity = '1';
+                heart.style.zIndex = '100';
+                
+                document.body.appendChild(heart);
+
+                // Randomize movement
+                const xMove = (Math.random() - 0.5) * 100;
+                const yMove = -100 - Math.random() * 100;
+
+                setTimeout(() => {
+                    heart.style.transform = `translate(${xMove}px, ${yMove}px) scale(0)`;
+                    heart.style.opacity = '0';
+                }, 50);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
