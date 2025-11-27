@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Dancing+Script:wght@400;700&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #0f172a; /* Fallback */
+            background-color: #050a14; /* Lebih gelap untuk kontras */
             overflow-x: hidden;
             margin: 0;
             padding: 0;
@@ -26,47 +26,115 @@
             font-family: 'Montserrat', sans-serif;
         }
 
-        /* Canvas for Stars */
-        #star-canvas {
+        .text-glow {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(165, 180, 252, 0.2);
+        }
+
+        .text-glow-gold {
+            text-shadow: 0 0 10px rgba(252, 211, 77, 0.3), 0 0 20px rgba(251, 191, 36, 0.2);
+        }
+
+        /* Nebula Background Effect using CSS */
+        .nebula-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -2;
+            overflow: hidden;
+            filter: blur(80px); /* Kunci efek nebula yang halus */
+            opacity: 0.6;
+            pointer-events: none;
         }
+
+        .nebula-blob {
+            position: absolute;
+            border-radius: 50%;
+            animation: moveNebula 20s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            top: 10%;
+            left: 20%;
+            width: 40vw;
+            height: 40vw;
+            background: #312e81; /* Indigo */
+            animation-duration: 25s;
+        }
+
+        .blob-2 {
+            bottom: 20%;
+            right: 10%;
+            width: 35vw;
+            height: 35vw;
+            background: #1e1b4b; /* Dark Indigo */
+            animation-duration: 30s;
+        }
+
+        .blob-3 {
+            bottom: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: #172554; /* Blue */
+            animation-duration: 35s;
+        }
+
+        @keyframes moveNebula {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -30px) scale(1.1); }
+        }
+
+        /* Canvas Layers */
+        #star-canvas, #meteor-canvas, #firefly-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        #star-canvas { z-index: -1; }
+        #meteor-canvas { z-index: -1; }
+        #firefly-canvas { z-index: -1; }
 
         /* The Moon Glow Effect */
         .moon-container {
             position: fixed;
-            top: 5%;
-            right: 10%;
-            width: 100px;
-            height: 100px;
+            top: 8%;
+            right: 8%;
+            width: 120px;
+            height: 120px;
             z-index: -1;
-            opacity: 0.9;
-            animation: floatMoon 10s infinite ease-in-out;
+            opacity: 1;
+            animation: floatMoon 12s infinite ease-in-out;
         }
         
         .moon {
-            width: 80px;
-            height: 80px;
-            background-color: #f6f1d5;
+            width: 100px;
+            height: 100px;
+            background-color: #fcfad9;
             border-radius: 50%;
-            box-shadow: 0 0 40px #f6f1d5, 0 0 80px #ffffff, inset -20px -20px 40px rgba(0,0,0,0.1);
+            /* Lebih realistik glow */
+            box-shadow: 
+                0 0 20px #fcfad9, 
+                0 0 60px rgba(255, 255, 255, 0.4), 
+                0 0 100px rgba(255, 255, 255, 0.1),
+                inset -30px -30px 50px rgba(0,0,0,0.15);
         }
 
         @keyframes floatMoon {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-15px); }
         }
 
         /* Scroll Animation Classes */
         .reveal-text {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(40px);
+            transition: all 1.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .reveal-text.visible {
@@ -76,27 +144,27 @@
 
         /* Glass Card */
         .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(15, 23, 42, 0.4); /* Sedikit lebih gelap agar teks terbaca */
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #090A0F;
+            background: #050a14;
         }
         ::-webkit-scrollbar-thumb {
-            background: #475569; 
-            border-radius: 4px;
+            background: #334155; 
+            border-radius: 3px;
         }
 
         /* Music Button Animation */
         .music-spin {
-            animation: spin 3s linear infinite;
+            animation: spin 4s linear infinite;
         }
         @keyframes spin {
             from { transform: rotate(0deg); }
@@ -106,98 +174,107 @@
 </head>
 <body class="antialiased selection:bg-indigo-500 selection:text-white">
 
-    <!-- Background Elements -->
+    <!-- Nebula Background -->
+    <div class="nebula-container">
+        <div class="nebula-blob blob-1"></div>
+        <div class="nebula-blob blob-2"></div>
+        <div class="nebula-blob blob-3"></div>
+    </div>
+
+    <!-- Canvas Elements -->
     <canvas id="star-canvas"></canvas>
+    <canvas id="meteor-canvas"></canvas>
+    <canvas id="firefly-canvas"></canvas>
+
     <div class="moon-container">
         <div class="moon"></div>
     </div>
 
-    <!-- Music Player (Fix: Changed from display:none to opacity-0 to ensure audio works) -->
-    <div class="fixed bottom-0 left-0 w-1 h-1 opacity-0 pointer-events-none overflow-hidden" style="z-index: -1;">
-        <div id="youtube-player"></div>
-    </div>
+    <!-- Audio Player -->
+    <audio id="bg-music" loop>
+        <source src="ytmp3free.cc_the-1975-about-you-official-youtubemp3free.org.mp3" type="audio/mpeg">
+    </audio>
     
     <!-- Music Control Button -->
-    <!-- Added id="music-btn" and disabled initially until loaded -->
-    <button id="music-btn" onclick="toggleMusic()" class="fixed top-6 right-6 z-50 p-3 glass-card rounded-full hover:bg-white/10 transition-all duration-300 group cursor-pointer opacity-50 cursor-not-allowed" disabled>
+    <button id="music-btn" onclick="toggleMusic()" class="fixed top-6 right-6 z-50 p-3 glass-card rounded-full hover:bg-white/10 transition-all duration-500 group cursor-pointer border-indigo-300/20 border">
         <!-- Play Icon -->
-        <svg id="play-icon" class="w-6 h-6 text-indigo-200 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="play-icon" class="w-6 h-6 text-indigo-100 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12 6-12 6z"></path>
         </svg>
         <!-- Pause Icon (Hidden by default) -->
-        <svg id="pause-icon" class="w-6 h-6 text-indigo-200 group-hover:text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="pause-icon" class="w-6 h-6 text-indigo-100 group-hover:text-white hidden transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6"></path> 
         </svg>
-        <span id="music-tooltip" class="absolute right-full mr-3 top-1/2 -translate-y-1/2 text-[10px] text-indigo-200 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Loading Music...</span>
+        <span id="music-tooltip" class="absolute right-full mr-4 top-1/2 -translate-y-1/2 text-[10px] text-indigo-100 font-modern tracking-[0.2em] uppercase opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Play Song</span>
     </button>
 
     <!-- Main Content Container -->
-    <main class="relative min-h-screen flex flex-col items-center justify-center px-6 pb-20">
+    <main class="relative min-h-screen flex flex-col items-center justify-center px-6 pb-20 z-10">
 
         <!-- Intro Section -->
-        <section class="h-screen flex flex-col items-center justify-center text-center reveal-text space-y-6">
-            <p class="font-modern text-xs md:text-sm tracking-[0.3em] uppercase text-indigo-200 opacity-70">A digital letter</p>
-            <h1 class="font-hand text-5xl md:text-7xl lg:text-8xl text-indigo-100 drop-shadow-lg">
+        <section class="h-screen flex flex-col items-center justify-center text-center reveal-text space-y-8">
+            <p class="font-modern text-xs md:text-sm tracking-[0.4em] uppercase text-indigo-200 opacity-60">A digital letter</p>
+            <h1 class="font-hand text-6xl md:text-8xl lg:text-9xl text-white drop-shadow-2xl text-glow">
                 For my girl,<br>
-                <span class="text-indigo-300">Moonlight</span>
+                <span class="text-indigo-200">Moonlight</span>
             </h1>
-            <div class="animate-bounce mt-10 opacity-50">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            <div class="animate-bounce mt-16 opacity-40">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
             </div>
         </section>
 
         <!-- Poem Section 1 -->
-        <section class="min-h-[60vh] flex items-center justify-center w-full max-w-2xl mx-auto my-10">
-            <div class="glass-card p-8 md:p-12 rounded-lg text-center reveal-text">
-                <p class="font-poet text-2xl md:text-3xl leading-relaxed text-slate-200">
+        <section class="min-h-[70vh] flex items-center justify-center w-full max-w-3xl mx-auto my-10">
+            <div class="glass-card p-10 md:p-16 rounded-2xl text-center reveal-text border border-white/5">
+                <p class="font-poet text-2xl md:text-4xl leading-relaxed text-slate-100 font-light">
                     "When the world forgets to lift its eyes toward your light, <br>
-                    <span class="text-indigo-300 italic">I will lift mine.</span>"
+                    <span class="text-indigo-200 italic font-normal text-glow">I will lift mine.</span>"
                 </p>
             </div>
         </section>
 
         <!-- Poem Section 2 (The Core Message) -->
-        <section class="min-h-[50vh] flex items-center justify-center w-full max-w-3xl mx-auto my-10">
-            <div class="text-center reveal-text space-y-8">
-                <div class="w-16 h-px bg-gradient-to-r from-transparent via-indigo-400 to-transparent mx-auto"></div>
+        <section class="min-h-[60vh] flex items-center justify-center w-full max-w-4xl mx-auto my-10 px-4">
+            <div class="text-center reveal-text space-y-10">
+                <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-indigo-300 to-transparent mx-auto opacity-50"></div>
                 <p class="font-poet text-xl md:text-3xl leading-loose text-slate-300">
                     No trophies, no applause, just me, <br>
                     finding you in the quiet,
                 </p>
                 <p class="font-poet text-xl md:text-3xl leading-loose text-slate-300">
                     to tell you how profoundly proud I am <br>
-                    of the <span class="text-amber-100 glow">gentle wonders</span> you carry <br>
+                    of the <span class="text-amber-100 text-glow-gold italic">gentle wonders</span> you carry <br>
                     in your every step.
                 </p>
-                <div class="w-16 h-px bg-gradient-to-r from-transparent via-indigo-400 to-transparent mx-auto"></div>
+                <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-indigo-300 to-transparent mx-auto opacity-50"></div>
             </div>
         </section>
 
         <!-- Additional Verse 1 -->
-        <section class="min-h-[50vh] flex items-center justify-center w-full max-w-2xl mx-auto my-10">
-            <div class="glass-card p-8 md:p-12 rounded-lg text-center reveal-text relative overflow-hidden">
+        <section class="min-h-[60vh] flex items-center justify-center w-full max-w-3xl mx-auto my-10">
+            <div class="glass-card p-10 md:p-14 rounded-2xl text-center reveal-text relative overflow-hidden group hover:border-indigo-500/30 transition-colors duration-700">
                  <!-- Decorative quote mark -->
-                 <span class="absolute top-2 left-4 text-6xl text-indigo-500 opacity-20 font-serif">“</span>
-                <p class="font-poet text-xl md:text-2xl leading-relaxed text-slate-200">
+                 <span class="absolute top-4 left-6 text-7xl text-indigo-400 opacity-10 font-serif">“</span>
+                <p class="font-poet text-xl md:text-3xl leading-loose text-slate-200">
                     You shine not because you are loud, but because you are real. In a chaotic universe, you are my favorite constellation, steady, bright, and endlessly beautiful.
                 </p>
             </div>
         </section>
 
         <!-- Special Dedication for Eiz -->
-        <section class="min-h-[60vh] flex flex-col items-center justify-center text-center reveal-text space-y-8 px-4">
-            <div class="space-y-4">
-                <p class="font-modern text-xs tracking-[0.2em] text-indigo-300 uppercase">For my cutie pie</p>
-                <h2 class="font-hand text-5xl md:text-6xl text-white drop-shadow-md">Eiz</h2>
+        <section class="min-h-[80vh] flex flex-col items-center justify-center text-center reveal-text space-y-10 px-4">
+            <div class="space-y-6">
+                <p class="font-modern text-xs tracking-[0.3em] text-indigo-200 uppercase opacity-70">For my cutie pie</p>
+                <h2 class="font-hand text-6xl md:text-8xl text-white drop-shadow-lg text-glow">Eiz</h2>
             </div>
             
-            <p class="font-poet text-xl md:text-2xl leading-loose text-slate-200 max-w-2xl">
+            <p class="font-poet text-2xl md:text-3xl leading-loose text-slate-200 max-w-3xl font-light">
                 Your smile is the only luminescence I need,<br>
                 and your existence is a beauty that far eclipses the night sky.
             </p>
 
-            <div class="glass-card px-8 py-6 rounded-full inline-block mt-8 transform hover:scale-105 transition-transform duration-500">
-                <p class="font-poet text-lg md:text-xl text-indigo-100 italic">
+            <div class="glass-card px-10 py-8 rounded-full inline-block mt-12 transform hover:scale-105 transition-transform duration-700 border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+                <p class="font-poet text-xl md:text-2xl text-indigo-100 italic">
                     "Apologies, dear Moon...<br> 
                     but she is far prettier than you."
                 </p>
@@ -205,185 +282,295 @@
         </section>
 
         <!-- Final Signature -->
-        <section class="h-[40vh] flex flex-col items-center justify-center text-center reveal-text border-t border-indigo-900/30 w-full max-w-4xl mx-auto">
-            <p class="font-modern text-sm tracking-widest mb-4 opacity-60">ALWAYS & FOREVER</p>
-            <h2 class="font-hand text-4xl md:text-6xl text-indigo-200">
+        <section class="h-[50vh] flex flex-col items-center justify-center text-center reveal-text w-full max-w-4xl mx-auto">
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-indigo-900 to-transparent mb-12"></div>
+            <p class="font-modern text-xs tracking-[0.4em] mb-6 opacity-50">ALWAYS & FOREVER</p>
+            <h2 class="font-hand text-5xl md:text-7xl text-indigo-100 text-glow">
                 Simply, Yours.
             </h2>
             
-            <p class="font-modern text-xs md:text-sm tracking-[0.2em] mt-6 text-indigo-300/80 uppercase">
+            <p class="font-modern text-xs md:text-sm tracking-[0.25em] mt-8 text-indigo-200/60 uppercase">
                 From Lval for Eiz
             </p>
 
-            <button onclick="createHeartEffect(event)" class="mt-12 px-6 py-2 border border-indigo-400/30 rounded-full text-indigo-200 hover:bg-indigo-500/10 transition-colors duration-300 font-modern text-xs tracking-widest uppercase">
+            <button onclick="createHeartEffect(event)" class="mt-16 px-8 py-3 border border-indigo-400/30 rounded-full text-indigo-100 hover:bg-white/5 hover:border-indigo-300 hover:shadow-[0_0_20px_rgba(165,180,252,0.1)] transition-all duration-500 font-modern text-xs tracking-[0.2em] uppercase cursor-pointer">
                 Send a Heart
             </button>
         </section>
 
     </main>
 
-    <footer class="fixed bottom-4 w-full text-center pointer-events-none z-50">
-        <p class="text-white/20 text-[10px] font-modern tracking-widest">MADE WITH LOVE</p>
+    <footer class="fixed bottom-6 w-full text-center pointer-events-none z-50">
+        <p class="text-white/10 text-[9px] font-modern tracking-[0.3em]">MADE WITH LOVE</p>
     </footer>
-
-    <!-- YouTube API Script -->
-    <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
         /**
-         * MUSIC PLAYER LOGIC (YouTube Embed)
+         * MUSIC PLAYER LOGIC
          */
-        let player;
-        let isPlaying = false;
+        const audio = document.getElementById('bg-music');
         const musicBtn = document.getElementById('music-btn');
         const musicTooltip = document.getElementById('music-tooltip');
-
-        // Make this function global so the API can find it
-        window.onYouTubeIframeAPIReady = function() {
-            player = new YT.Player('youtube-player', {
-                height: '200',
-                width: '200',
-                videoId: 'tGv7CUutzqU',
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'loop': 1,
-                    'playlist': 'tGv7CUutzqU',
-                    'playsinline': 1,
-                    'origin': window.location.origin // Crucial for some iframe environments
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
-            });
-        };
-
-        function onPlayerReady(event) {
-            console.log("Music Player Ready");
-            event.target.setVolume(100);
-            
-            // Enable button
-            if(musicBtn) {
-                musicBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                musicBtn.removeAttribute('disabled');
-                if(musicTooltip) musicTooltip.textContent = "Play Song";
-            }
-        }
-
-        function onPlayerStateChange(event) {
-            // Optional: Handle buffering or ending if needed
-        }
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
 
         function toggleMusic() {
-            const playIcon = document.getElementById('play-icon');
-            const pauseIcon = document.getElementById('pause-icon');
-            
-            // Safety check: if API isn't loaded or player isn't ready
-            if (!player || typeof player.getPlayerState !== 'function') {
-                console.log("Player not ready yet");
-                return;
-            }
-
-            const playerState = player.getPlayerState();
-
-            // YT.PlayerState.PLAYING is usually 1
-            if (playerState === 1 || isPlaying) {
-                player.pauseVideo();
-                if(playIcon) playIcon.classList.remove('hidden');
-                if(pauseIcon) pauseIcon.classList.add('hidden');
-                if(musicBtn) musicBtn.classList.remove('music-spin');
-                isPlaying = false;
-                if(musicTooltip) musicTooltip.textContent = "Play Song";
+            if (audio.paused) {
+                audio.play();
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+                musicBtn.classList.add('music-spin');
+                musicBtn.classList.add('border-indigo-300');
+                musicTooltip.textContent = "Pause Song";
             } else {
-                player.unMute();
-                player.playVideo();
-                if(playIcon) playIcon.classList.add('hidden');
-                if(pauseIcon) pauseIcon.classList.remove('hidden');
-                if(musicBtn) musicBtn.classList.add('music-spin');
-                isPlaying = true;
-                if(musicTooltip) musicTooltip.textContent = "Pause Song";
+                audio.pause();
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                musicBtn.classList.remove('music-spin');
+                musicBtn.classList.remove('border-indigo-300');
+                musicTooltip.textContent = "Play Song";
             }
         }
+        audio.volume = 0.5;
 
         /**
-         * ANIMATED BACKGROUND (STARS)
+         * CANVAS 1: STARS (TWINKLING)
          */
-        const canvas = document.getElementById('star-canvas');
-        const ctx = canvas.getContext('2d');
-
-        let width, height;
+        const starCanvas = document.getElementById('star-canvas');
+        const starCtx = starCanvas.getContext('2d');
+        let starWidth, starHeight;
         let stars = [];
 
-        function initCanvas() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
+        function initStarCanvas() {
+            starWidth = window.innerWidth;
+            starHeight = window.innerHeight;
+            starCanvas.width = starWidth;
+            starCanvas.height = starHeight;
             createStars();
+        }
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * starWidth;
+                this.y = Math.random() * starHeight;
+                this.radius = Math.random() * 1.2;
+                this.baseOpacity = Math.random() * 0.5 + 0.1;
+                this.opacity = this.baseOpacity;
+                this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+                this.twinkleDir = 1;
+            }
+
+            update() {
+                // Twinkle effect
+                this.opacity += this.twinkleSpeed * this.twinkleDir;
+                if (this.opacity > this.baseOpacity + 0.3 || this.opacity > 1) this.twinkleDir = -1;
+                if (this.opacity < this.baseOpacity - 0.1 || this.opacity < 0.1) this.twinkleDir = 1;
+            }
+
+            draw() {
+                starCtx.beginPath();
+                starCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                starCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                starCtx.shadowBlur = this.radius * 2;
+                starCtx.shadowColor = "white";
+                starCtx.fill();
+                starCtx.shadowBlur = 0;
+            }
         }
 
         function createStars() {
             stars = [];
-            const count = Math.floor((width * height) / 6000); // Density of stars
+            const count = Math.floor((starWidth * starHeight) / 5000); 
             for (let i = 0; i < count; i++) {
-                stars.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    radius: Math.random() * 1.5,
-                    opacity: Math.random(),
-                    speed: Math.random() * 0.05 + 0.01,
-                    direction: Math.random() > 0.5 ? 1 : -1
-                });
+                stars.push(new Star());
             }
         }
 
         function animateStars() {
-            ctx.clearRect(0, 0, width, height);
-            
+            starCtx.clearRect(0, 0, starWidth, starHeight);
             stars.forEach(star => {
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-                ctx.fill();
-
-                // Twinkle effect
-                star.opacity += (Math.random() - 0.5) * 0.05;
-                if (star.opacity < 0.1) star.opacity = 0.1;
-                if (star.opacity > 1) star.opacity = 1;
-
-                // Move stars slightly
-                star.y -= star.speed; 
-                if (star.y < 0) star.y = height;
+                star.update();
+                star.draw();
             });
-
             requestAnimationFrame(animateStars);
         }
 
-        window.addEventListener('resize', initCanvas);
-        initCanvas();
+        /**
+         * CANVAS 2: METEORS (ELEGANT)
+         */
+        const meteorCanvas = document.getElementById('meteor-canvas');
+        const meteorCtx = meteorCanvas.getContext('2d');
+        let meteorWidth, meteorHeight;
+        let meteors = [];
+
+        function initMeteorCanvas() {
+            meteorWidth = window.innerWidth;
+            meteorHeight = window.innerHeight;
+            meteorCanvas.width = meteorWidth;
+            meteorCanvas.height = meteorHeight;
+        }
+
+        class Meteor {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * meteorWidth + 200; // Offset to start right
+                this.y = Math.random() * -100;
+                this.length = Math.random() * 200 + 150; 
+                this.speed = Math.random() * 1.5 + 2.5; 
+                this.angle = Math.PI / 4 + (Math.random() * 0.1 - 0.05); 
+                this.thickness = Math.random() * 1 + 0.5;
+                this.opacity = 0; // Start invisible
+                this.state = 'fadein'; // fadein, moving, fadeout
+            }
+            draw() {
+                meteorCtx.beginPath();
+                const tailX = this.x - this.length * Math.cos(this.angle);
+                const tailY = this.y - this.length * Math.sin(this.angle);
+                
+                const gradient = meteorCtx.createLinearGradient(this.x, this.y, tailX, tailY);
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
+                gradient.addColorStop(0.1, `rgba(200, 230, 255, ${this.opacity * 0.8})`);
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                meteorCtx.moveTo(this.x, this.y);
+                meteorCtx.lineTo(tailX, tailY);
+                meteorCtx.strokeStyle = gradient;
+                meteorCtx.lineWidth = this.thickness;
+                meteorCtx.lineCap = 'round';
+                meteorCtx.shadowBlur = 10;
+                meteorCtx.shadowColor = "rgba(255, 255, 255, 0.5)";
+                meteorCtx.stroke();
+                meteorCtx.shadowBlur = 0;
+            }
+            update() {
+                this.x += this.speed * Math.cos(this.angle);
+                this.y += this.speed * Math.sin(this.angle);
+
+                // Fade logic
+                if (this.state === 'fadein') {
+                    this.opacity += 0.02;
+                    if (this.opacity >= 1) this.state = 'moving';
+                } else if (this.y > meteorHeight * 0.6) {
+                    this.state = 'fadeout';
+                }
+
+                if (this.state === 'fadeout') {
+                    this.opacity -= 0.02;
+                }
+
+                if (this.opacity <= 0 && this.state === 'fadeout') return false;
+                if (this.y > meteorHeight + 100) return false;
+                return true;
+            }
+        }
+
+        function animateMeteors() {
+            meteorCtx.clearRect(0, 0, meteorWidth, meteorHeight);
+            for (let i = meteors.length - 1; i >= 0; i--) {
+                meteors[i].draw();
+                let alive = meteors[i].update();
+                if (!alive) meteors.splice(i, 1);
+            }
+            if (Math.random() < 0.01) meteors.push(new Meteor());
+            requestAnimationFrame(animateMeteors);
+        }
+
+        /**
+         * CANVAS 3: FIREFLIES (ROMANTIC)
+         */
+        const fireflyCanvas = document.getElementById('firefly-canvas');
+        const fireflyCtx = fireflyCanvas.getContext('2d');
+        let fireflyWidth, fireflyHeight;
+        let fireflies = [];
+
+        function initFireflyCanvas() {
+            fireflyWidth = window.innerWidth;
+            fireflyHeight = window.innerHeight;
+            fireflyCanvas.width = fireflyWidth;
+            fireflyCanvas.height = fireflyHeight;
+            createFireflies();
+        }
+
+        class Firefly {
+            constructor() {
+                this.x = Math.random() * fireflyWidth;
+                this.y = Math.random() * fireflyHeight;
+                this.radius = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random();
+                this.fadeDir = 1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Gentle flicker
+                this.opacity += 0.005 * this.fadeDir;
+                if (this.opacity > 0.8) this.fadeDir = -1;
+                if (this.opacity < 0.2) this.fadeDir = 1;
+
+                // Wrap around screen
+                if (this.x < 0) this.x = fireflyWidth;
+                if (this.x > fireflyWidth) this.x = 0;
+                if (this.y < 0) this.y = fireflyHeight;
+                if (this.y > fireflyHeight) this.y = 0;
+            }
+            draw() {
+                fireflyCtx.beginPath();
+                fireflyCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                fireflyCtx.fillStyle = `rgba(255, 223, 100, ${this.opacity})`; // Gold color
+                fireflyCtx.shadowBlur = 5;
+                fireflyCtx.shadowColor = "rgb(255, 223, 100)";
+                fireflyCtx.fill();
+                fireflyCtx.shadowBlur = 0;
+            }
+        }
+
+        function createFireflies() {
+            fireflies = [];
+            const count = 40; // Number of fireflies
+            for (let i = 0; i < count; i++) {
+                fireflies.push(new Firefly());
+            }
+        }
+
+        function animateFireflies() {
+            fireflyCtx.clearRect(0, 0, fireflyWidth, fireflyHeight);
+            fireflies.forEach(f => {
+                f.update();
+                f.draw();
+            });
+            requestAnimationFrame(animateFireflies);
+        }
+
+        // Init All Canvas
+        window.addEventListener('resize', () => {
+            initStarCanvas();
+            initMeteorCanvas();
+            initFireflyCanvas();
+        });
+        initStarCanvas();
         animateStars();
+        initMeteorCanvas();
+        animateMeteors();
+        initFireflyCanvas();
+        animateFireflies();
 
         /**
          * SCROLL REVEAL ANIMATION
          */
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.2 // Trigger when 20% visible
-        };
-
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.15 });
 
-        document.querySelectorAll('.reveal-text').forEach(el => {
-            observer.observe(el);
-        });
+        document.querySelectorAll('.reveal-text').forEach(el => observer.observe(el));
 
         /**
          * HEART EFFECT INTERACTION
@@ -392,33 +579,29 @@
             const button = e.target;
             const rect = button.getBoundingClientRect();
             
-            for(let i=0; i<5; i++) {
+            for(let i=0; i<8; i++) {
                 const heart = document.createElement('div');
                 heart.innerHTML = '🤍';
                 heart.style.position = 'fixed';
                 heart.style.left = (rect.left + rect.width/2) + 'px';
                 heart.style.top = (rect.top) + 'px';
-                heart.style.fontSize = '20px';
+                heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
                 heart.style.pointerEvents = 'none';
                 heart.style.transform = `translate(-50%, -50%)`;
-                heart.style.transition = 'all 1s ease-out';
+                heart.style.transition = 'all 1.5s ease-out';
                 heart.style.opacity = '1';
                 heart.style.zIndex = '100';
                 
                 document.body.appendChild(heart);
 
-                // Randomize movement
-                const xMove = (Math.random() - 0.5) * 100;
-                const yMove = -100 - Math.random() * 100;
+                const xMove = (Math.random() - 0.5) * 150;
+                const yMove = -100 - Math.random() * 150;
 
                 setTimeout(() => {
                     heart.style.transform = `translate(${xMove}px, ${yMove}px) scale(0)`;
                     heart.style.opacity = '0';
                 }, 50);
-
-                setTimeout(() => {
-                    heart.remove();
-                }, 1000);
+                setTimeout(() => heart.remove(), 1500);
             }
         }
     </script>
